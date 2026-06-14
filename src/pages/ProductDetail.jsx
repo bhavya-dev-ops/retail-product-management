@@ -2,7 +2,7 @@ import { ArrowLeft, MessageCircle, Tag, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase.js";
-import { formatPrice, getWhatsAppLink } from "../utils/whatsapp.js";
+import { getWhatsAppLink } from "../utils/whatsapp.js";
 
 export default function ProductDetail() {
   const { productId } = useParams();
@@ -96,13 +96,12 @@ export default function ProductDetail() {
             {product.name}
           </h1>
 
-          <div className="mt-6 rounded-lg border border-black/10 bg-brand-mist p-4">
-            <div className="flex items-center gap-2 text-sm font-black text-black/60">
-              <Tag className="h-4 w-4" />
-              Price
+          <div className="mt-6 rounded-lg border border-brand-red/20 bg-brand-soft p-4">
+            <div className="flex items-center gap-2 text-base font-black text-brand-red">
+              🏪 In-Store Purchase Only
             </div>
-            <p className="mt-2 text-3xl font-black text-brand-ink">
-              {product.show_price ? formatPrice(product.price) : "Contact for Price"}
+            <p className="mt-1 text-sm font-semibold leading-relaxed text-brand-ink/80">
+              Visit our shop to check product availability and purchase.
             </p>
           </div>
 

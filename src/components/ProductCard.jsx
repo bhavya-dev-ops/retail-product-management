@@ -1,6 +1,6 @@
 import { Eye, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatPrice, getWhatsAppLink } from "../utils/whatsapp.js";
+import { getWhatsAppLink } from "../utils/whatsapp.js";
 
 export default function ProductCard({ product }) {
   const isNew = product.created_at && (new Date() - new Date(product.created_at)) / (1000 * 60 * 60 * 24) <= 7;
@@ -38,8 +38,8 @@ export default function ProductCard({ product }) {
 
         <div className="mt-1 mb-3">
           <div className="flex h-6 items-center">
-            <p className="text-sm sm:text-base font-black text-brand-ink">
-              {product.show_price !== false ? formatPrice(product.price) : "Contact for Price"}
+            <p className="text-[13px] sm:text-sm font-black text-brand-red truncate">
+              🏪 In-Store Purchase Only
             </p>
           </div>
         </div>
