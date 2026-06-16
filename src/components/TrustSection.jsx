@@ -28,8 +28,8 @@ export default function TrustSection() {
   const cards = [
     {
       icon: <Star className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-brand-red" />,
-      title: "20+ Years of Service",
-      description: "Serving customers with quality footwear for over 20 years.",
+      title: "35+ Years of Service",
+      description: "Serving customers with quality footwear for over 35 years.",
       delay: "delay-[0ms]",
     },
     {

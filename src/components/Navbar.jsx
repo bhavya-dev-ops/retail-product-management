@@ -53,10 +53,15 @@ export default function Navbar({
           </Link>
 
           <div className="flex shrink-0 justify-center">
-            <span className="inline-flex items-center justify-center text-gray-700 text-sm font-medium">
-              <span className="text-base sm:mr-1.5" aria-hidden="true">📍</span>
+            <a
+              href="https://maps.app.goo.gl/xv3QK8nLVN18pRzX9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-center rounded-full bg-gray-50 px-3 py-1.5 text-sm font-semibold text-gray-700 transition-all hover:bg-[#B91C1C]/10 hover:text-[#B91C1C] border border-gray-200 hover:border-[#B91C1C]/30 shadow-sm"
+            >
+              <span className="text-base sm:mr-1.5 transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-0.5" aria-hidden="true">📍</span>
               <span className="hidden md:inline">Jawahar Ganj, Gangoh</span>
-            </span>
+            </a>
           </div>
 
           <div className="relative flex shrink-0 justify-end" ref={menuRef}>

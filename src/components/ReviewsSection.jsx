@@ -80,7 +80,7 @@ export default function ReviewsSection() {
             What Our Customers Say
           </p>
           <h2 className="mt-2 text-3xl font-black text-brand-ink sm:text-4xl">
-            Trusted by families in Gangoh for over 20 years.
+            Trusted by families in Gangoh for over 35 years.
           </h2>
           <div className="mt-4 flex justify-center">
             <div className="h-1 w-16 rounded bg-brand-red"></div>

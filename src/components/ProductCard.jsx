@@ -3,17 +3,11 @@ import { Link } from "react-router-dom";
 import { getWhatsAppLink } from "../utils/whatsapp.js";
 
 export default function ProductCard({ product }) {
-  const isNew = product.created_at && (new Date() - new Date(product.created_at)) / (1000 * 60 * 60 * 24) <= 7;
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-black/10 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-brand-red/50 hover:shadow-xl">
       <Link className="focus-ring block rounded-md" to={`/products/${product.id}`}>
         <div className="relative aspect-[5/4] overflow-hidden bg-brand-mist">
-          {isNew && (
-            <span className="absolute left-2 top-2 z-10 rounded-full bg-brand-red px-2 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-sm">
-              New
-            </span>
-          )}
           <img
             alt={product.name}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"

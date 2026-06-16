@@ -35,17 +35,27 @@ export default function ContactSection() {
           </div>
         </div>
 
-        <div className="min-h-72 overflow-hidden rounded-lg border border-white/10 bg-white/10">
-          <div className="flex h-full min-h-72 items-center justify-center bg-[linear-gradient(135deg,rgba(255,255,255,0.10)_0%,rgba(168,15,18,0.22)_100%)] p-5 text-center">
-            <div>
-              <MapPin className="mx-auto h-12 w-12 text-white" />
-              <p className="mt-3 text-xl font-black">Google Maps</p>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-white/70">
-                Raj Footwear location map will appear here when the store map link is added.
-              </p>
-            </div>
+        <a
+          href="https://maps.app.goo.gl/xv3QK8nLVN18pRzX9"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative block min-h-72 overflow-hidden rounded-lg border border-white/10 focus-ring"
+        >
+          <img
+            src="/shop-front.jpg"
+            alt="Raj Footwear Shop Front"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-black/60 transition-colors group-hover:bg-black/50" />
+          <div className="relative flex h-full min-h-72 flex-col items-center justify-center p-5 text-center text-white">
+            <MapPin className="mb-2 h-10 w-10 text-brand-red transition-transform duration-500 group-hover:scale-110" />
+            <p className="text-2xl font-black tracking-tight">Raj Footwear</p>
+            <p className="mt-1 text-sm font-medium text-white/90">Jawahar Ganj, Gangoh</p>
+            <span className="mt-4 inline-flex rounded-full bg-brand-red/90 px-5 py-2 text-sm font-bold text-white backdrop-blur-md transition-colors group-hover:bg-brand-red">
+              Visit Our Store
+            </span>
           </div>
-        </div>
+        </a>
       </div>
     </section>
   );
