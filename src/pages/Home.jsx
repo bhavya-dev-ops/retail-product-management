@@ -4,6 +4,7 @@ import ReviewsSection from "../components/ReviewsSection.jsx";
 import Hero from "../components/Hero.jsx";
 import TrustSection from "../components/TrustSection.jsx";
 import ProductGrid from "../components/ProductGrid.jsx";
+import StoreVisitBanner from "../components/StoreVisitBanner.jsx";
 
 export default function Home({ filter, onClearFilters, onFilterChange }) {
   return (
@@ -17,6 +18,7 @@ export default function Home({ filter, onClearFilters, onFilterChange }) {
         onFilterChange={onFilterChange}
       />
       <ReviewsSection />
+      <StoreVisitBanner />
       <ContactSection />
     </>
   );
