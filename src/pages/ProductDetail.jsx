@@ -62,7 +62,7 @@ export default function ProductDetail() {
           <div className="overflow-hidden rounded-lg border border-black/10 bg-brand-mist shadow-sm">
             <img
               alt={product.name}
-              className="aspect-[4/3] h-full w-full object-cover"
+              className="aspect-square h-full w-full object-cover"
               src={activeImage}
             />
           </div>
@@ -76,7 +76,7 @@ export default function ProductDetail() {
                 type="button"
                 onClick={() => setActiveImage(image)}
               >
-                <img alt="" className="aspect-[4/3] h-full w-full object-cover" src={image} />
+                <img alt="" className="aspect-square h-full w-full object-cover" src={image} />
               </button>
             ))}
           </div>

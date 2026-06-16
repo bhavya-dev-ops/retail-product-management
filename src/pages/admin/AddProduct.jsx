@@ -1,7 +1,10 @@
-import { Loader2, Upload, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2, Upload, X, Camera, ImagePlus } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase.js";
+import ImageCropper from "../../components/admin/ImageCropper";
+import heic2any from "heic2any";
+
 
 export default function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -17,6 +20,13 @@ export default function AddProduct() {
   
   const [images, setImages] = useState([]); // File objects
   const [imagePreviews, setImagePreviews] = useState([]);
+  
+  const [filesToCrop, setFilesToCrop] = useState([]);
+  const [currentFileToCropUrl, setCurrentFileToCropUrl] = useState(null);
+  
+  const [isDragging, setIsDragging] = useState(false);
+  const galleryInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,15 +55,86 @@ export default function AddProduct() {
 
   const uniqueCategories = [...new Set(categories.map(c => c.category_name))];
 
-  function handleImageChange(e) {
-    if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files);
-      setImages(prev => [...prev, ...newFiles]);
-      
-      const newPreviews = newFiles.map(file => URL.createObjectURL(file));
-      setImagePreviews(prev => [...prev, ...newPreviews]);
+  async function processFiles(fileList) {
+    let newFiles = Array.from(fileList);
+    let validFiles = [];
+
+    for (let file of newFiles) {
+      const isDuplicate = [...images, ...filesToCrop].some(
+        f => f.name === file.name && f.size === file.size
+      );
+      if (isDuplicate) continue;
+
+      if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8
+          });
+          const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+          const newFileName = file.name.replace(/\.heic$/i, '.jpg');
+          const jpgFile = new File([blob], newFileName, { type: "image/jpeg" });
+          validFiles.push(jpgFile);
+        } catch (e) {
+          console.error("HEIC conversion error:", e);
+        }
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setFilesToCrop(prev => [...prev, ...validFiles]);
     }
   }
+
+  function handleImageChange(e) {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+    }
+    e.target.value = null;
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  useEffect(() => {
+    if (filesToCrop.length > 0 && !currentFileToCropUrl) {
+      const file = filesToCrop[0];
+      setCurrentFileToCropUrl(URL.createObjectURL(file));
+    }
+  }, [filesToCrop, currentFileToCropUrl]);
+
+  const handleCropComplete = (croppedFile) => {
+    setImages(prev => [...prev, croppedFile]);
+    setImagePreviews(prev => [...prev, URL.createObjectURL(croppedFile)]);
+    
+    const remainingFiles = filesToCrop.slice(1);
+    setFilesToCrop(remainingFiles);
+    setCurrentFileToCropUrl(null);
+  };
+
+  const handleCropCancel = () => {
+    const remainingFiles = filesToCrop.slice(1);
+    setFilesToCrop(remainingFiles);
+    setCurrentFileToCropUrl(null);
+  };
 
   function removeImage(index) {
     setImages(prev => prev.filter((_, i) => i !== index));
@@ -215,27 +296,68 @@ export default function AddProduct() {
 
           <div className="md:col-span-2 border-t border-black/10 pt-6">
             <label className="block text-sm font-bold text-brand-ink">Product Images</label>
+            <p className="mt-1 text-xs font-semibold text-black/60">Place the footwear in the center and ensure the entire product is visible.</p>
             
-            <div className="mt-2 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-              {imagePreviews.map((url, i) => (
-                <div key={i} className="relative aspect-square overflow-hidden rounded-md border border-black/10">
-                  <img src={url} alt={`Preview ${i}`} className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(i)}
-                    className="absolute right-1 top-1 rounded-full bg-white/80 p-1 text-red-600 shadow-sm hover:bg-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-              
-              <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-black/20 bg-brand-mist transition-colors hover:border-brand-red hover:bg-brand-soft text-black/50 hover:text-brand-red">
-                <Upload className="h-6 w-6" />
-                <span className="mt-2 text-xs font-bold">Upload</span>
-                <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageChange} />
-              </label>
+            <div 
+              className={`mt-4 rounded-lg border-2 border-dashed p-6 text-center transition-colors ${isDragging ? 'border-brand-red bg-brand-soft' : 'border-black/20 bg-brand-mist'}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <button
+                  type="button"
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="focus-ring flex items-center gap-2 rounded-md bg-white px-4 py-2.5 text-sm font-bold text-brand-ink shadow-sm border border-black/10 hover:border-brand-red hover:text-brand-red transition-colors"
+                >
+                  <ImagePlus className="h-4 w-4" />
+                  Upload from Gallery
+                </button>
+                <button
+                  type="button"
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="focus-ring flex items-center gap-2 rounded-md bg-brand-ink px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-black transition-colors"
+                >
+                  <Camera className="h-4 w-4" />
+                  Take Photo
+                </button>
+              </div>
+              <p className="mt-4 text-xs font-semibold text-black/40 hidden sm:block">Or drag and drop images here</p>
+
+              <input
+                ref={galleryInputRef}
+                type="file"
+                multiple
+                accept="image/*,.heic"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={handleImageChange}
+              />
             </div>
+
+            {imagePreviews.length > 0 && (
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {imagePreviews.map((url, i) => (
+                  <div key={i} className="relative aspect-square overflow-hidden rounded-md border border-black/10">
+                    <img src={url} alt={`Preview ${i}`} className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute right-1 top-1 rounded-full bg-white/80 p-1 text-red-600 shadow-sm hover:bg-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -250,6 +372,14 @@ export default function AddProduct() {
           </button>
         </div>
       </form>
+
+      {currentFileToCropUrl && (
+        <ImageCropper
+          imageSrc={currentFileToCropUrl}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }

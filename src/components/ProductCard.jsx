@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-black/10 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-brand-red/50 hover:shadow-xl">
       <Link className="focus-ring block rounded-md" to={`/products/${product.id}`}>
-        <div className="relative aspect-[5/4] overflow-hidden bg-brand-mist">
+        <div className="relative aspect-square overflow-hidden bg-brand-mist">
           <img
             alt={product.name}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
