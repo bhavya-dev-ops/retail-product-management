@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Footer from "./components/Footer.jsx";
 import FloatingAssistant from "./components/FloatingAssistant.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
+import { initGA, logPageView } from "./utils/analytics.js";
 
 // Admin Imports
 import AdminLayout from "./components/admin/AdminLayout.jsx";
@@ -23,6 +24,17 @@ const defaultFilter = {
 export default function App() {
   const [filter, setFilter] = useState(defaultFilter);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Initialize GA once when app mounts
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  // Track page views on location (route) changes
+  useEffect(() => {
+    logPageView(location.pathname + location.search);
+  }, [location]);
 
   function scrollToProducts() {
     window.setTimeout(() => {
