@@ -2,6 +2,8 @@
 
 A full-stack retail store management platform built with React, Tailwind CSS, and Supabase.
 
+# Last updated: June 18, 2026
+
 ## Features
 
 - Secure Admin Authentication
