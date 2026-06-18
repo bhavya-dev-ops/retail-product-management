@@ -37,10 +37,6 @@ VITE_SUPABASE_URL=your_url
 VITE_SUPABASE_ANON_KEY=your_key
 ```
 
-## Live Demo
-
-🌐 https://raj-footwear.vercel.app
-
 ## Author
 
 **Bhavya Singhal**
